@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비기능적 기획 누락의 치명적 결과 분석</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;800&display=swap');
+        
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #fdfbf7; /* Warm neutral background */
+            color: #2d3436;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            height: 300px;
+            max-height: 350px;
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+
+        .transition-soft {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .og-preview {
+            max-width: 380px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            background: white;
+        }
+
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+
+    <!-- Chosen Palette: Warm Professional -->
+    <!-- Primary: #3d3d3d (Charcoal) -->
+    <!-- Accent: #e67e22 (Carrot Orange - for warnings) -->
+    <!-- Neutral: #fdfbf7 (Cream White) -->
+    <!-- Success: #27ae60 (Emerald) -->
+
+    <!-- Application Structure Plan:
+         1. Intro: 기능 vs 비기능의 정의와 기획 누락의 핵심 문제 제기.
+         2. Comparison: 비전문가 기획 vs 전문가 기획의 포커스 분석 (Chart.js).
+         3. Scenario Simulation: SEO/OpenGraph 누락 시 소셜 미디어 공유 결과 시뮬레이션.
+         4. Impact Analysis: 비기능적 요소 결여가 비즈니스 지표(트래픽, 이탈률)에 미치는 영향 분석.
+         5. Solution Checklist: 기획 단계에서 반드시 챙겨야 할 비기능 리스트 제공.
+    -->
+
+    <!-- Visualization & Content Choices:
+         - Radar Chart: To show the 'Imbalance' in focus between amateur and professional planning.
+         - Interactive Preview: JS-controlled UI to show "Bad Share" vs "Good Share".
+         - Status Indicators: Dynamic icons to highlight risks.
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased">
+
+    <!-- Header Section -->
+    <nav class="sticky top-0 z-50 glass-morphism border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                <span class="font-extrabold text-xl tracking-tighter">PLANNING <span class="text-amber-600">ERROR</span></span>
+            </div>
+            <div class="hidden md:flex gap-6 text-sm font-semibold text-slate-500">
+                <a href="#comparison" class="hover:text-slate-900">영역 비교</a>
+                <a href="#simulation" class="hover:text-slate-900">공유 시뮬레이션</a>
+                <a href="#checklist" class="hover:text-slate-900">체크리스트</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="py-20 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
+                "기능만 있는 웹사이트는<br><span class="text-amber-600">고립된 섬</span>과 같습니다"
+            </h1>
+            <p class="text-lg text-slate-600 leading-relaxed mb-8">
+                비전문 기획자가 놓치는 '비기능적 요소'는 단순한 기술적 디테일이 아닙니다. <br class="hidden md:block">
+                그것은 당신의 브랜드가 세상에 발견되고 전달되는 <strong>연결 통로</strong>입니다.
+            </p>
+            <div class="flex justify-center gap-4">
+                <div class="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full text-xs font-bold text-slate-500">
+                    <i class="fa-solid fa-eye-slash"></i> SEO 누락
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full text-xs font-bold text-slate-500">
+                    <i class="fa-solid fa-share-nodes"></i> OG 태그 부재
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full text-xs font-bold text-slate-500">
+                    <i class="fa-solid fa-bolt-lightning"></i> 성능 최적화 무시
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 space-y-24 pb-24">
+
+        <!-- Section 1: Comparison Analysis -->
+        <section id="comparison" class="scroll-mt-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-extrabold text-slate-900 mb-4">기획의 불균형: 기능 vs 비기능</h2>
+                    <p class="text-slate-600 mb-8 leading-relaxed">
+                        비전문 기획자는 "이 버튼을 누르면 이 화면이 나와야 한다"는 <strong>기능(Functional)</strong>에 집중합니다. 하지만 전문가는 "이 페이지가 몇 초 만에 뜨는가", "구글 검색 결과에 어떻게 보이는가"라는 <strong>비기능(Non-functional)</strong> 요소가 사용자 경험의 절반을 차지한다는 것을 압니다.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4 p-4 rounded-xl bg-white border border-slate-100 card-shadow">
+                            <div class="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 font-bold">Q</div>
+                            <div>
+                                <h4 class="font-bold text-sm">비전문 기획자의 질문</h4>
+                                <p class="text-xs text-slate-500">"게시판 기능이 잘 작동하나요? 디자인이 예쁜가요?"</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-4 rounded-xl bg-slate-900 text-white card-shadow">
+                            <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center text-amber-500 font-bold">A</div>
+                            <div>
+                                <h4 class="font-bold text-sm">전문 기획자의 질문</h4>
+                                <p class="text-xs text-slate-400">"카톡 공유 시 썸네일은 무엇인가요? SEO 타이틀 구조는요?"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-3xl card-shadow">
+                    <h3 class="text-center font-bold text-slate-700 mb-6">기획자 숙련도별 관심사 비중</h3>
+                    <div class="chart-container">
+                        <canvas id="planningChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Social Share Simulation -->
+        <section id="simulation" class="scroll-mt-24">
+            <div class="bg-slate-900 rounded-[2.5rem] p-12 text-white overflow-hidden relative">
+                <div class="absolute -right-20 -top-20 w-80 h-80 bg-amber-600/20 blur-[100px] rounded-full"></div>
+                
+                <div class="relative z-10">
+                    <div class="max-w-3xl mb-12">
+                        <h2 class="text-3xl font-extrabold mb-4">비기능적 기획 누락 시 시각적 충격</h2>
+                        <p class="text-slate-400">
+                            링크를 카카오톡이나 페이스북에 공유했을 때의 모습을 비교해보세요. 
+                            <strong>오픈 그래프(OpenGraph)</strong> 설정 하나가 브랜드 신뢰도와 클릭률을 결정합니다.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <!-- Bad Case -->
+                        <div class="space-y-6">
+                            <div class="flex items-center gap-3">
+                                <span class="px-3 py-1 bg-red-600 rounded text-[10px] font-black uppercase">Bad Case</span>
+                                <span class="text-sm text-slate-400 font-bold">비전문 기획 (설정 누락)</span>
+                            </div>
+                            <div class="og-preview bg-slate-800 border-slate-700 opacity-80">
+                                <div class="h-48 bg-slate-700 flex items-center justify-center">
+                                    <i class="fa-regular fa-image text-slate-600 text-4xl"></i>
+                                </div>
+                                <div class="p-4 space-y-2">
+                                    <div class="h-4 w-3/4 bg-slate-600 rounded"></div>
+                                    <div class="h-3 w-full bg-slate-700 rounded"></div>
+                                    <div class="h-3 w-1/2 bg-slate-700 rounded"></div>
+                                    <p class="text-[10px] text-slate-500 pt-2">domain.com</p>
+                                </div>
+                            </div>
+                            <ul class="text-xs space-y-2 text-slate-400">
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-xmark text-red-500"></i> 이미지 없음 (기본 아이콘 노출)</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-xmark text-red-500"></i> 불분명한 타이틀 ("Home" 또는 도메인 주소)</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-xmark text-red-500"></i> 사이트 설명 누락 (메타 디스크립션 부재)</li>
+                            </ul>
+                        </div>
+
+                        <!-- Good Case -->
+                        <div class="space-y-6">
+                            <div class="flex items-center gap-3">
+                                <span class="px-3 py-1 bg-green-600 rounded text-[10px] font-black uppercase">Good Case</span>
+                                <span class="text-sm text-slate-400 font-bold">전문가 기획 (전략적 설정)</span>
+                            </div>
+                            <div class="og-preview card-shadow transform hover:scale-105 transition-soft cursor-pointer">
+                                <div class="h-48 bg-slate-100 flex items-center justify-center relative">
+                                    <!-- Simplified Canvas-like visual -->
+                                    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=400'); opacity: 0.9;"></div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                    <span class="absolute bottom-4 left-4 text-white text-xs font-bold bg-[#e67e22] px-2 py-1 rounded">Promotion</span>
+                                </div>
+                                <div class="p-4 bg-white">
+                                    <h4 class="font-bold text-slate-900 text-sm mb-1">워드프레스 홈페이지 제작 솔루션 | ABC 에이전시</h4>
+                                    <p class="text-xs text-slate-600 line-clamp-2">비즈니스 성공을 위한 최적의 워드프레스 기획부터 SEO 최적화까지, 당신의 브랜드를 세상에 알리세요.</p>
+                                    <p class="text-[10px] text-[#27ae60] font-bold pt-2 uppercase tracking-widest">www.abc-agency.com</p>
+                                </div>
+                            </div>
+                            <ul class="text-xs space-y-2 text-slate-400">
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> 고해상도 브랜드 이미지</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> 키워드 포함 타이틀 (SEO 연결)</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> 소구력 있는 설명 문구</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: The Cost of Neglect -->
+        <section class="scroll-mt-24">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-4">비기능 요소 무시의 대가</h2>
+                <p class="text-slate-500 max-w-2xl mx-auto italic">"제작비 500만원을 들여 만든 사이트가, 구글 검색 결과 20페이지 뒤에 있다면 그 가치는 0원입니다."</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-8 bg-white rounded-3xl card-shadow border border-slate-50 text-center group hover:bg-amber-50 transition-colors">
+                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 mx-auto mb-6 group-hover:scale-110 transition-soft">
+                        <i class="fa-solid fa-magnifying-glass-chart text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-4">검색 엔진 외면</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        SEO 기획이 없는 사이트는 구글봇이 정보 구조를 이해하지 못해 검색 순위에서 제외됩니다. 광고 없이는 트래픽이 발생하지 않는 <strong>'돈 먹는 하마'</strong>가 됩니다.
+                    </p>
+                </div>
+                <div class="p-8 bg-white rounded-3xl card-shadow border border-slate-50 text-center group hover:bg-amber-50 transition-colors">
+                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 mx-auto mb-6 group-hover:scale-110 transition-soft">
+                        <i class="fa-solid fa-user-slash text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-4">낮은 클릭률(CTR)</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        썸네일과 문구가 없는 링크는 스팸처럼 보입니다. 유저의 클릭을 유도하는 '브릿지 기획'이 없으면 아무리 훌륭한 컨텐츠도 읽히지 않습니다.
+                    </p>
+                </div>
+                <div class="p-8 bg-white rounded-3xl card-shadow border border-slate-50 text-center group hover:bg-amber-50 transition-colors">
+                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 mx-auto mb-6 group-hover:scale-110 transition-soft">
+                        <i class="fa-solid fa-gears text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-4">재개발 비용 발생</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        오픈 후에 비기능 요소를 추가하려면 테마 구조를 뜯어내거나 플러그인 충돌을 해결해야 합니다. 처음부터 기획하는 것보다 <strong>2~3배의 기술 부채</strong>가 발생합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Professional Checklist -->
+        <section id="checklist" class="scroll-mt-24">
+            <div class="bg-white rounded-[2.5rem] p-10 card-shadow border border-slate-100">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+                    <div>
+                        <h2 class="text-3xl font-extrabold text-slate-900">비전문 기획 탈출 체크리스트</h2>
+                        <p class="text-slate-500 mt-1">이 리스트가 기획안에 포함되어 있나요?</p>
+                    </div>
+                    <button class="px-6 py-3 bg-[#e67e22] text-white font-bold rounded-xl hover:bg-slate-900 transition-colors">
+                        PDF 리포트 다운로드
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-6">
+                    <!-- Category: Search & Social -->
+                    <div class="space-y-4">
+                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest border-b pb-2">Search & Social (연결)</h3>
+                        <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl group hover:bg-slate-100 transition-colors">
+                            <input type="checkbox" class="mt-1 w-5 h-5 rounded text-[#e67e22] focus:ring-[#e67e22]">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-800">SEO 타이틀/디스크립션 체계</h4>
+                                <p class="text-xs text-slate-500">모든 페이지의 고유 메타 정보가 엑셀로 기획되었는가?</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl group hover:bg-slate-100 transition-colors">
+                            <input type="checkbox" class="mt-1 w-5 h-5 rounded text-[#e67e22] focus:ring-[#e67e22]">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-800">OpenGraph (소셜 공유) 자산</h4>
+                                <p class="text-xs text-slate-500">공유 시 나타날 1200x630 규격의 이미지가 디자인되었는가?</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl group hover:bg-slate-100 transition-colors">
+                            <input type="checkbox" class="mt-1 w-5 h-5 rounded text-[#e67e22] focus:ring-[#e67e22]">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-800">Favicon & Touch Icon</h4>
+                                <p class="text-xs text-slate-500">브라우저 탭 및 즐겨찾기 아이콘이 규격별로 정의되었는가?</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category: Performance & Safety -->
+                    <div class="space-y-4">
+                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest border-b pb-2">Performance & Safety (신뢰)</h3>
+                        <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl group hover:bg-slate-100 transition-colors">
+                            <input type="checkbox" class="mt-1 w-5 h-5 rounded text-[#e67e22] focus:ring-[#e67e22]">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-800">이미지 최적화 정책</h4>
+                                <p class="text-xs text-slate-500">WebP 변환 및 Lazy Loading 기법이 기획에 포함되었는가?</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl group hover:bg-slate-100 transition-colors">
+                            <input type="checkbox" class="mt-1 w-5 h-5 rounded text-[#e67e22] focus:ring-[#e67e22]">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-800">개인정보처리방침 및 보안 (SSL)</h4>
+                                <p class="text-xs text-slate-500">법적 필수 문서와 HTTPS 보안 인증 계획이 수립되었는가?</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl group hover:bg-slate-100 transition-colors">
+                            <input type="checkbox" class="mt-1 w-5 h-5 rounded text-[#e67e22] focus:ring-[#e67e22]">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-800">접근성 및 가독성 (Accessibility)</h4>
+                                <p class="text-xs text-slate-500">폰트 크기, 대비감, 대체 텍스트(Alt)가 기획되었는가?</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white py-16">
+        <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div>
+                <h3 class="text-2xl font-black mb-4">워드프레스는 단순한 툴이 아닙니다.</h3>
+                <p class="text-slate-400 text-sm leading-relaxed max-w-sm">
+                    비전문가적인 기획은 예쁜 쓰레기를 만들지만, 전략적 기획은 비즈니스의 엔진을 만듭니다. 지금 당신의 기획안에서 '비기능적 요소'를 다시 점검하세요.
+                </p>
+            </div>
+            <div class="flex flex-col md:items-end justify-center">
+                <p class="text-slate-500 text-xs mb-2">Developed by Planning Insight Lab.</p>
+                <div class="flex gap-4">
+                    <i class="fa-brands fa-wordpress text-2xl text-slate-700"></i>
+                    <i class="fa-solid fa-code text-2xl text-slate-700"></i>
+                    <i class="fa-solid fa-shield-halved text-2xl text-slate-700"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Dynamic Interactions -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initPlanningChart();
+        });
+
+        function initPlanningChart() {
+            const ctx = document.getElementById('planningChart').getContext('2d');
+            
+            // Professional vs Amateur focus data
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: [
+                        '기능(버튼, 게시판)',
+                        '디자인(컬러, 폰트)',
+                        'SEO(검색 최적화)',
+                        'OG(소셜 공유)',
+                        '성능(속도, 용량)',
+                        '보안/법적준수'
+                    ],
+                    datasets: [
+                        {
+                            label: '비전문가 기획',
+                            data: [95, 90, 10, 5, 15, 20],
+                            fill: true,
+                            backgroundColor: 'rgba(230, 126, 34, 0.2)',
+                            borderColor: '#e67e22',
+                            pointBackgroundColor: '#e67e22',
+                            pointBorderColor: '#fff'
+                        },
+                        {
+                            label: '전문 기획자',
+                            data: [80, 85, 95, 90, 85, 90],
+                            fill: true,
+                            backgroundColor: 'rgba(51, 65, 85, 0.2)',
+                            borderColor: '#334155',
+                            pointBackgroundColor: '#334155',
+                            pointBorderColor: '#fff'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 10, weight: 'bold' },
+                                boxWidth: 12
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Simple smooth scroll implementation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

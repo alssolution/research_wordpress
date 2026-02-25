@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>워드프레스 제작 프로세스 및 전략 분석</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #ffffff;
+            color: #1e293b;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+
+        .step-active {
+            border-color: #0073aa;
+            background-color: #f0f9ff;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .role-highlight {
+            transition: all 0.3s ease;
+        }
+
+        .role-highlight:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Custom Transition */
+        .fade-in-section {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+    <!-- Chosen Palette: Professional Slate & WP Blue -->
+    <!-- Primary: #0073aa (WP Blue) -->
+    <!-- Secondary: #64748b (Slate 500) -->
+    <!-- Highlight: #38bdf8 (Sky 400) -->
+
+    <!-- Application Structure Plan:
+         1. Executive Summary: 제작 기간과 기획/디자인의 중요성 요약.
+         2. Interactive Roadmap: 5단계 제작 프로세스 타임라인 (클릭 시 상세 기획/디자인 역할 노출).
+         3. Dynamic Duration Estimator: 프로젝트 규모별 기간 산정 시뮬레이터.
+         4. Role Deep Dive: 기획 vs 디자인 vs 개발의 리소스 투입 비중 분석 (Chart.js).
+         5. Methodology: 왜 기획이 무너지면 워드프레스는 '프랑켄슈타인'이 되는가에 대한 분석.
+    -->
+
+    <!-- Visualization & Content Choices:
+         - Timeline: Horizontal clickable steps using Tailwind Flex.
+         - Duration Logic: JS-based calculator reacting to 'Scale' and 'Type' inputs.
+         - Resource Allocation: Polar Area or Radar Chart (Chart.js) to show role balance.
+         - Interaction: Step-by-step detail toggle to prevent information overload.
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+</head>
+<body class="bg-white">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-[#0073aa] rounded-lg flex items-center justify-center text-white">
+                    <i class="fa-solid fa-layer-group text-sm"></i>
+                </div>
+                <span class="font-bold text-lg tracking-tight">WP <span class="text-[#0073aa]">Strategy</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-medium text-slate-500">
+                <a href="#roadmap" class="hover:text-[#0073aa] transition-colors">제작 프로세스</a>
+                <a href="#estimator" class="hover:text-[#0073aa] transition-colors">기간 산정</a>
+                <a href="#roles" class="hover:text-[#0073aa] transition-colors">역할 분석</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="py-16 bg-slate-50 border-b border-slate-100">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <span class="inline-block px-3 py-1 rounded-full bg-blue-100 text-[#0073aa] text-xs font-bold mb-4">GUIDE 2024</span>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-6">
+                워드프레스 구축 프로젝트:<br>
+                <span class="text-[#0073aa]">기획과 디자인이 성패를 결정합니다</span>
+            </h1>
+            <p class="text-slate-600 leading-relaxed max-w-2xl mx-auto">
+                단순히 설치하는 것이 제작의 전부는 아닙니다. 비즈니스 목적에 맞는 설계(기획)와 브랜드 경험(디자인)이 결합될 때 비로소 가치 있는 홈페이지가 탄생합니다.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-16 space-y-24">
+
+        <!-- Section 1: Interactive Roadmap -->
+        <section id="roadmap" class="fade-in-section">
+            <div class="mb-12 text-center">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">워드프레스 제작 5단계 표준 로드맵</h2>
+                <p class="text-slate-500 text-sm">각 단계를 클릭하여 기획자와 디자이너의 구체적인 역할을 확인하세요.</p>
+            </div>
+
+            <!-- Steps Container -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-10">
+                <button onclick="showStep(1)" id="step-btn-1" class="step-btn transition-all duration-300 p-5 rounded-xl border-2 border-slate-100 text-left group step-active">
+                    <span class="block text-xs font-bold text-slate-400 group-hover:text-[#0073aa] mb-2">STEP 01</span>
+                    <h3 class="font-bold text-slate-800">요구사항 및 기획</h3>
+                </button>
+                <button onclick="showStep(2)" id="step-btn-2" class="step-btn transition-all duration-300 p-5 rounded-xl border-2 border-slate-100 text-left group">
+                    <span class="block text-xs font-bold text-slate-400 group-hover:text-[#0073aa] mb-2">STEP 02</span>
+                    <h3 class="font-bold text-slate-800">UX/UI 디자인</h3>
+                </button>
+                <button onclick="showStep(3)" id="step-btn-3" class="step-btn transition-all duration-300 p-5 rounded-xl border-2 border-slate-100 text-left group">
+                    <span class="block text-xs font-bold text-slate-400 group-hover:text-[#0073aa] mb-2">STEP 03</span>
+                    <h3 class="font-bold text-slate-800">테마 및 기능 구현</h3>
+                </button>
+                <button onclick="showStep(4)" id="step-btn-4" class="step-btn transition-all duration-300 p-5 rounded-xl border-2 border-slate-100 text-left group">
+                    <span class="block text-xs font-bold text-slate-400 group-hover:text-[#0073aa] mb-2">STEP 04</span>
+                    <h3 class="font-bold text-slate-800">컨텐츠 및 SEO</h3>
+                </button>
+                <button onclick="showStep(5)" id="step-btn-5" class="step-btn transition-all duration-300 p-5 rounded-xl border-2 border-slate-100 text-left group">
+                    <span class="block text-xs font-bold text-slate-400 group-hover:text-[#0073aa] mb-2">STEP 05</span>
+                    <h3 class="font-bold text-slate-800">테스트 및 오픈</h3>
+                </button>
+            </div>
+
+            <!-- Step Detail Panel -->
+            <div id="step-detail" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 min-h-[300px]">
+                <!-- Default content (Step 1) will be injected by JS -->
+                <div class="flex flex-col md:flex-row gap-10">
+                    <div class="md:w-1/3">
+                        <div class="p-4 bg-blue-50 rounded-lg">
+                            <h4 class="font-bold text-[#0073aa] mb-2"><i class="fa-solid fa-clock mr-2"></i>예상 기간</h4>
+                            <p class="text-2xl font-bold">1 ~ 2주</p>
+                            <p class="text-xs text-slate-500 mt-1">프로젝트의 뼈대를 만드는 가장 중요한 시기</p>
+                        </div>
+                    </div>
+                    <div class="md:w-2/3 space-y-6">
+                        <div>
+                            <h4 class="font-bold text-slate-800 flex items-center gap-2 mb-3">
+                                <span class="w-1.5 h-6 bg-blue-500 rounded-full"></span> 기획자의 역할
+                            </h4>
+                            <ul class="space-y-2 text-sm text-slate-600">
+                                <li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-1"></i> 사이트맵(IA) 정의: 메뉴 구조 및 정보 위계 설정</li>
+                                <li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-1"></i> 기능 명세 작성: 회원가입, 예약, 결제 등 필요 플러그인 사전 조사</li>
+                                <li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-1"></i> 와이어프레임 제작: 페이지별 주요 컨텐츠 배치 설계</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 flex items-center gap-2 mb-3">
+                                <span class="w-1.5 h-6 bg-sky-400 rounded-full"></span> 디자이너의 역할
+                            </h4>
+                            <ul class="space-y-2 text-sm text-slate-600">
+                                <li class="flex items-start gap-2"><i class="fa-solid fa-check text-sky-500 mt-1"></i> 무드보드 제안: 브랜드 컬러, 폰트, 이미지 톤앤매너 설정</li>
+                                <li class="flex items-start gap-2"><i class="fa-solid fa-check text-sky-500 mt-1"></i> 레퍼런스 분석: 동종 업계 및 트렌디한 디자인 벤치마킹</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Estimator -->
+        <section id="estimator" class="fade-in-section">
+            <div class="mb-10">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">맞춤형 제작 기간 산정</h2>
+                <p class="text-slate-500">프로젝트의 성격에 따라 예상되는 기간(T-Time)을 시뮬레이션 합니다.</p>
+            </div>
+
+            <div class="bg-slate-900 rounded-3xl p-8 text-white shadow-xl overflow-hidden relative">
+                <!-- Background Accent -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 blur-3xl rounded-full -mr-32 -mt-32"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 relative z-10">
+                    <div class="space-y-8">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-4">프로젝트 규모</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <button onclick="updateEstimate('scale', 'small')" id="scale-small" class="est-btn py-3 px-4 rounded-xl border border-slate-700 hover:border-blue-500 transition-all text-sm font-bold bg-slate-800/50">소규모(단일)</button>
+                                <button onclick="updateEstimate('scale', 'mid')" id="scale-mid" class="est-btn py-3 px-4 rounded-xl border border-blue-500 transition-all text-sm font-bold bg-blue-600">중규모(기업)</button>
+                                <button onclick="updateEstimate('scale', 'large')" id="scale-large" class="est-btn py-3 px-4 rounded-xl border border-slate-700 hover:border-blue-500 transition-all text-sm font-bold bg-slate-800/50">대규모(플랫폼)</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-4">디자인 커스터마이징</label>
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-3 p-4 bg-slate-800/50 rounded-xl border border-slate-700 cursor-pointer hover:border-slate-500 transition">
+                                    <input type="radio" name="design_type" value="theme" onchange="updateEstimate('design', 'theme')" class="w-4 h-4 text-blue-600" checked>
+                                    <div>
+                                        <span class="block text-sm font-bold">테마 기반 (Standard)</span>
+                                        <span class="block text-xs text-slate-500">유료 테마의 구조를 활용하여 제작</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-slate-800/50 rounded-xl border border-slate-700 cursor-pointer hover:border-slate-500 transition">
+                                    <input type="radio" name="design_type" value="custom" onchange="updateEstimate('design', 'custom')" class="w-4 h-4 text-blue-600">
+                                    <div>
+                                        <span class="block text-sm font-bold">풀 커스텀 디자인 (Premium)</span>
+                                        <span class="block text-xs text-slate-500">전체 페이지 UX/UI를 개별 설계 및 구현</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col justify-center items-center text-center p-10 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+                        <h4 class="text-slate-400 text-sm font-bold mb-2 uppercase tracking-widest">Estimated Duration</h4>
+                        <div class="text-7xl font-black text-white mb-4">
+                            <span id="est-weeks">6~8</span><span class="text-2xl font-normal text-slate-500 ml-1">주</span>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-8">
+                            선택하신 조건에 따르면 기획 2주, 디자인 2주,<br>
+                            퍼블리싱 및 개발 2~4주가 소요될 것으로 예상됩니다.
+                        </p>
+                        <div class="w-full space-y-2">
+                            <div class="flex justify-between text-xs font-bold px-1">
+                                <span class="text-blue-400">Planning & Design (50%)</span>
+                                <span class="text-slate-400">Development (50%)</span>
+                            </div>
+                            <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden flex">
+                                <div id="bar-plan" class="h-full bg-blue-500 transition-all duration-700" style="width: 50%"></div>
+                                <div id="bar-dev" class="h-full bg-slate-600 transition-all duration-700" style="width: 50%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Role Analysis -->
+        <section id="roles" class="fade-in-section">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6">기획과 디자인이 중요한 이유</h2>
+                    <div class="space-y-6">
+                        <div class="role-highlight p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <h4 class="font-bold text-[#0073aa] mb-2">1. '플러그인 떡칠' 방지 (기획의 힘)</h4>
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                기획 없이 제작에 들어가면 필요한 기능마다 플러그인을 추가하게 되어 사이트 속도가 느려지고 보안이 취약해집니다. 기획 단계에서 <strong>최소한의 코어 기능</strong>을 정의해야 가벼운 사이트가 됩니다.
+                            </p>
+                        </div>
+                        <div class="role-highlight p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <h4 class="font-bold text-[#0073aa] mb-2">2. '어디서 본 듯한 사이트' 탈피 (디자인의 힘)</h4>
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                워드프레스 테마를 그대로 쓰면 브랜드 개성이 사라집니다. 전문 디자이너는 테마의 한계를 이해하고, <strong>사용자 여정(Customer Journey)</strong>에 맞춘 레이아웃을 재구성하여 신뢰도를 높입니다.
+                            </p>
+                        </div>
+                        <div class="role-highlight p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <h4 class="font-bold text-[#0073aa] mb-2">3. 데이터 기반의 SEO 최적화</h4>
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                기획 단계에서 키워드를 분석하고 디자인 단계에서 검색 로봇이 읽기 좋은 위계(Heading Tag)를 반영해야 합니다. 기술적 구현보다 <strong>정보 구조 설계</strong>가 SEO의 핵심입니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-8 rounded-3xl">
+                    <h3 class="text-lg font-bold text-slate-800 text-center mb-8">성공적인 WP 프로젝트의 리소스 투입 비중</h3>
+                    <div class="chart-container">
+                        <canvas id="roleChart"></canvas>
+                    </div>
+                    <div class="mt-8 grid grid-cols-3 gap-2 text-center">
+                        <div>
+                            <div class="text-xs text-slate-400 font-bold mb-1">기획</div>
+                            <div class="text-lg font-bold text-[#0073aa]">30%</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400 font-bold mb-1">디자인</div>
+                            <div class="text-lg font-bold text-[#38bdf8]">30%</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400 font-bold mb-1">개발/QA</div>
+                            <div class="text-lg font-bold text-slate-400]">40%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-50 border-t border-slate-200 py-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <p class="text-slate-400 text-sm mb-4 font-medium">워드프레스는 도구일 뿐, 핵심은 당신의 비즈니스 설계입니다.</p>
+            <div class="flex justify-center gap-4">
+                <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-400">
+                    <i class="fa-brands fa-wordpress"></i>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-400">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-400">
+                    <i class="fa-solid fa-pen-nib"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Roadmap Data ---
+        const stepData = {
+            1: {
+                title: "요구사항 및 기획",
+                period: "1 ~ 2주",
+                planning: [
+                    "사이트맵(IA) 정의: 메뉴 구조 및 정보 위계 설정",
+                    "기능 명세 작성: 회원가입, 예약, 결제 등 필요 플러그인 조사",
+                    "와이어프레임 제작: 페이지별 주요 컨텐츠 배치 설계"
+                ],
+                design: [
+                    "무드보드 제안: 브랜드 컬러, 폰트 설정",
+                    "레퍼런스 분석: 벤치마킹 사이트 UI 분석"
+                ]
+            },
+            2: {
+                title: "UX/UI 디자인",
+                period: "1 ~ 2주",
+                planning: [
+                    "카피라이팅 확정: 각 섹션에 들어갈 문구 최종 검수",
+                    "사용자 흐름(User Flow) 체크: 버튼 클릭 시 이동 경로 확인"
+                ],
+                design: [
+                    "고해상도 시안 작업: 실제 이미지와 텍스트를 적용한 디자인",
+                    "반응형 가이드 제작: 모바일/태블릿 화면 대응 설계",
+                    "아이콘 및 그래픽 에셋 제작: 사이트 아이덴티티 강화"
+                ]
+            },
+            3: {
+                title: "테마 및 기능 구현",
+                period: "2 ~ 4주",
+                planning: [
+                    "DB 구조 설계: 커스텀 포스트 타입(CPT)이 필요한 경우 설계",
+                    "플러그인 최적화 구성: 성능에 영향을 주지 않는 필수 조합 구성"
+                ],
+                design: [
+                    "디자인 검수: 개발된 화면이 시안과 일치하는지 확인 (Pixel Perfect)",
+                    "애니메이션/인터랙션 가이드: 스크롤 효과 등 세부 동작 지시"
+                ]
+            },
+            4: {
+                title: "컨텐츠 및 SEO",
+                period: "1주",
+                planning: [
+                    "검색 엔진 최적화(SEO) 세팅: 메타 태그, 키워드 배치",
+                    "컨텐츠 업로드: 실제 포스트 및 상세 페이지 컨텐츠 등록"
+                ],
+                design: [
+                    "이미지 용량 최적화: 속도 개선을 위한 WebP 변환 및 리사이징",
+                    "favicon 및 SNS 공유 이미지 제작"
+                ]
+            },
+            5: {
+                title: "테스트 및 오픈",
+                period: "0.5주",
+                planning: [
+                    "QA 진행: 브라우저별 호환성 및 기능 오류 테스트",
+                    "관리자 교육: 고객사가 직접 수정 가능하도록 매뉴얼 제공"
+                ],
+                design: [
+                    "최종 비주얼 체크: 오탈자 및 깨지는 레이아웃 최종 수정"
+                ]
+            }
+        };
+
+        // --- Estimator State ---
+        let currentScale = 'mid';
+        let currentDesign = 'theme';
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initRoleChart();
+            showStep(1);
+        });
+
+        // --- UI Functions ---
+        function showStep(step) {
+            const data = stepData[step];
+            const detailPanel = document.getElementById('step-detail');
+            
+            // Update Buttons
+            document.querySelectorAll('.step-btn').forEach(btn => btn.classList.remove('step-active'));
+            document.getElementById(`step-btn-${step}`).classList.add('step-active');
+
+            // Inject Content
+            detailPanel.innerHTML = `
+                <div class="flex flex-col md:flex-row gap-10 fade-in-section">
+                    <div class="md:w-1/3">
+                        <div class="p-4 bg-blue-50 rounded-lg">
+                            <h4 class="font-bold text-[#0073aa] mb-2"><i class="fa-solid fa-clock mr-2"></i>예상 기간</h4>
+                            <p class="text-2xl font-bold">${data.period}</p>
+                            <p class="text-xs text-slate-500 mt-1">${step === 1 ? '뼈대를 만드는 기간' : '완성도를 높이는 기간'}</p>
+                        </div>
+                    </div>
+                    <div class="md:w-2/3 space-y-6">
+                        <div>
+                            <h4 class="font-bold text-slate-800 flex items-center gap-2 mb-3">
+                                <span class="w-1.5 h-6 bg-blue-500 rounded-full"></span> 기획자의 역할
+                            </h4>
+                            <ul class="space-y-2 text-sm text-slate-600">
+                                ${data.planning.map(item => `<li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-1"></i> ${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 flex items-center gap-2 mb-3">
+                                <span class="w-1.5 h-6 bg-sky-400 rounded-full"></span> 디자이너의 역할
+                            </h4>
+                            <ul class="space-y-2 text-sm text-slate-600">
+                                ${data.design.map(item => `<li class="flex items-start gap-2"><i class="fa-solid fa-check text-sky-500 mt-1"></i> ${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateEstimate(type, value) {
+            if (type === 'scale') {
+                currentScale = value;
+                // UI Toggle
+                document.querySelectorAll('.est-btn').forEach(btn => {
+                    btn.classList.remove('bg-blue-600', 'border-blue-500');
+                    btn.classList.add('bg-slate-800/50', 'border-slate-700');
+                });
+                document.getElementById(`scale-${value}`).classList.remove('bg-slate-800/50', 'border-slate-700');
+                document.getElementById(`scale-${value}`).classList.add('bg-blue-600', 'border-blue-500');
+            } else if (type === 'design') {
+                currentDesign = value;
+            }
+
+            // Calculation Logic
+            let minWeeks = 4;
+            let maxWeeks = 6;
+            let planRatio = 50;
+
+            if (currentScale === 'small') { minWeeks = 2; maxWeeks = 4; planRatio = 40; }
+            if (currentScale === 'large') { minWeeks = 10; maxWeeks = 16; planRatio = 60; }
+
+            if (currentDesign === 'custom') {
+                minWeeks += 2;
+                maxWeeks += 4;
+                planRatio += 5;
+            }
+
+            // Update UI
+            document.getElementById('est-weeks').innerText = `${minWeeks}~${maxWeeks}`;
+            document.getElementById('bar-plan').style.width = `${planRatio}%`;
+            document.getElementById('bar-dev').style.width = `${100 - planRatio}%`;
+        }
+
+        function initRoleChart() {
+            const ctx = document.getElementById('roleChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: ['전략 및 기획', 'UX/UI 디자인', '기술 구현 (Dev)', '컨텐츠 최적화', 'QA 및 유지보수'],
+                    datasets: [{
+                        data: [30, 25, 30, 10, 5],
+                        backgroundColor: [
+                            'rgba(0, 115, 170, 0.7)',
+                            'rgba(56, 189, 248, 0.7)',
+                            'rgba(148, 163, 184, 0.7)',
+                            'rgba(51, 65, 85, 0.7)',
+                            'rgba(226, 232, 240, 0.7)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            ticks: { display: false },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 10, font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

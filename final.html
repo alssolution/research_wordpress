@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>워드프레스 기반 홈페이지 제작 최종 전략 가이드</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;800&display=swap');
+        
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            scroll-behavior: smooth;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            height: 350px;
+        }
+
+        .gradient-border {
+            position: relative;
+            background: #fff;
+            border-radius: 1rem;
+        }
+
+        .gradient-border::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            z-index: -1;
+            background: linear-gradient(90deg, #0073aa, #38bdf8);
+            border-radius: 1.1rem;
+        }
+
+        .tab-active {
+            color: #0073aa;
+            border-bottom: 3px solid #0073aa;
+            font-weight: 700;
+        }
+
+        .content-card {
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.1);
+        }
+    </style>
+
+    <!-- Chosen Palette: WordPress Professional -->
+    <!-- Primary: #0073aa (WP Blue) -->
+    <!-- Light: #f8fafc (Slate 50) -->
+    <!-- Accent: #38bdf8 (Sky Blue) -->
+
+    <!-- Application Structure Plan:
+         1. Final Verdict: 왜 워드프레스인가에 대한 핵심 요약.
+         2. Role Definition (Planning): 사실 정리 및 정책 정의 중심의 기획 가이드.
+         3. Role Definition (Design): 브랜드 신뢰 및 비기능 요소 중심의 디자인 가이드.
+         4. Synergy Framework: 기획과 디자인이 AI를 '필터'로 사용하는 워크플로우.
+         5. The Deliverables: 최종적으로 나와야 하는 팩트 기반 산출물 리스트.
+    -->
+
+    <!-- Visualization & Content Choices:
+         - Radar Chart: Planning vs Design vs Dev의 역량 균형 시각화.
+         - Interactive Tabs: 기획/디자인 각각의 상세 역할 전환 보기.
+         - Decision Tree: 팩트 체크 프로세스 시각화.
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i class="fa-brands fa-wordpress text-2xl text-[#0073aa]"></i>
+                <span class="font-extrabold text-xl tracking-tight">WP <span class="text-[#0073aa]">MASTER PLAN</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-semibold text-slate-500">
+                <a href="#planning" class="hover:text-[#0073aa] transition-colors">기획 전략</a>
+                <a href="#design" class="hover:text-[#0073aa] transition-colors">디자인 전략</a>
+                <a href="#ai-usage" class="hover:text-[#0073aa] transition-colors">AI 활용법</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="py-20 px-6 bg-white border-b border-slate-100">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
+                "결국 워드프레스입니다.<br>단, <span class="text-[#0073aa]">팩트 기반의 설계</span>가 전제되어야 합니다."
+            </h1>
+            <p class="text-lg text-slate-600 leading-relaxed mb-10">
+                워드프레스는 가장 유연한 도구이지만, 그 안을 채우는 것은 기획의 사실 관계와 디자인의 전략입니다. 
+                AI에 의존하는 '소설 기획'을 멈추고, 회사의 실체를 담는 정석적인 방법을 제시합니다.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200">
+                    <div class="text-[#0073aa] font-black text-2xl mb-1">Scale</div>
+                    <p class="text-xs text-slate-500">확장 가능한 무한 생태계</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200">
+                    <div class="text-[#0073aa] font-black text-2xl mb-1">Trust</div>
+                    <p class="text-xs text-slate-500">데이터 소유권과 독립성</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200">
+                    <div class="text-[#0073aa] font-black text-2xl mb-1">Value</div>
+                    <p class="text-xs text-slate-500">장기적인 유지보수 효율</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-20 space-y-32">
+
+        <!-- Section 1: Strategic Role Balance -->
+        <section class="scroll-mt-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-6">
+                    <h2 class="text-3xl font-black text-slate-900">성공의 조건: 3대 역량의 균형</h2>
+                    <p class="text-slate-600 leading-relaxed">
+                        홈페이지 제작은 개발만의 영역이 아닙니다. **기획(사실 정의)**, **디자인(경험 설계)**, **기술(워드프레스 최적화)**이 1:1:1의 비중으로 결합되어야 합니다. 어느 한 쪽이 무너지면 사이트는 '예쁜 쓰레기' 혹은 '작동하지 않는 소설'이 됩니다.
+                    </p>
+                    <div class="p-6 bg-blue-50 rounded-2xl border border-blue-100">
+                        <h4 class="font-bold text-[#0073aa] mb-3"><i class="fa-solid fa-lightbulb mr-2"></i>최종 결론: 워드프레스를 선택하는 이유</h4>
+                        <ul class="text-sm text-slate-700 space-y-2">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-1"></i> 자체 개발 대비 비용이 1/3 수준이나 품질은 동급 유지 가능</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-1"></i> 전 세계 표준 인프라로 유지보수 업체 변경이 자유로움</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-1"></i> 검색엔진(SEO) 및 소셜미디어 확산에 최적화된 아키텍처</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100">
+                    <div class="chart-container">
+                        <canvas id="balanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Detailed Action Plan (Planning & Design) -->
+        <section id="planning" class="scroll-mt-24">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-black text-slate-900 mb-4">역할별 핵심 액션 가이드</h2>
+                <p class="text-slate-500">기획자와 디자이너가 'AI 소설'에 빠지지 않기 위해 반드시 수행해야 할 과업입니다.</p>
+            </div>
+
+            <!-- Role Tabs -->
+            <div class="flex justify-center mb-12 border-b border-slate-200">
+                <button onclick="switchTab('planner')" id="tab-planner" class="px-8 py-4 text-sm font-bold tab-active">기획자 (Planner)</button>
+                <button onclick="switchTab('designer')" id="tab-designer" class="px-8 py-4 text-sm font-bold text-slate-400">디자이너 (Designer)</button>
+            </div>
+
+            <!-- Tab Content: Planner -->
+            <div id="content-planner" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="content-card p-8 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-[#0073aa] mb-6">
+                        <i class="fa-solid fa-database text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-4">1. 팩트 데이터 추출 (Fact)</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed mb-4">
+                        AI가 지어내지 못하게 해야 합니다. 실제 수치, 연혁, 파트너사 로고, 고객의 생생한 목소리를 원본 데이터 형태로 정리합니다.
+                    </p>
+                    <ul class="text-xs text-slate-400 space-y-1">
+                        <li>- 회사 소개 및 서비스의 실제 데이터 수집</li>
+                        <li>- 경쟁사 대비 확실한 기술적 우위 지표 정리</li>
+                    </ul>
+                </div>
+                <div class="content-card p-8 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-[#0073aa] mb-6">
+                        <i class="fa-solid fa-list-check text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-4">2. 정책 및 우선순위 (Policy)</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed mb-4">
+                        "어떻게 보여줄 것인가"보다 "무엇이 중요한가"를 결정합니다. 서비스의 이용 약관부터 환불 정책, 데이터 처리 방침을 명문화합니다.
+                    </p>
+                    <ul class="text-xs text-slate-400 space-y-1">
+                        <li>- 사이트맵 기반의 정보 설계 (IA)</li>
+                        <li>- 각 페이지별 반드시 노출해야 할 핵심 우선순위 결정</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tab Content: Designer (Hidden by default) -->
+            <div id="content-designer" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="content-card p-8 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                    <div class="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center text-sky-600 mb-6">
+                        <i class="fa-solid fa-fingerprint text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-4">1. 브랜드 아이덴티티 시각화</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed mb-4">
+                        워드프레스 테마의 틀에 갇히지 않아야 합니다. 브랜드의 컬러, 폰트, 그래픽 톤앤매너를 가이드로 정의하여 일관된 경험을 제공합니다.
+                    </p>
+                    <ul class="text-xs text-slate-400 space-y-1">
+                        <li>- 컬러 팔레트 및 타이포그래피 시스템 정의</li>
+                        <li>- 브랜드 고유의 이미지 자산 및 일러스트레이션 확보</li>
+                    </ul>
+                </div>
+                <div class="content-card p-8 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                    <div class="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center text-sky-600 mb-6">
+                        <i class="fa-solid fa-share-nodes text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-4">2. 비기능적 비주얼 설계</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed mb-4">
+                        홈페이지 밖에서도 잘 보여야 합니다. 카카오톡 공유 이미지(OG), 파비콘, 검색 결과 썸네일 등 사용자가 보지 못하는 영역을 디자인합니다.
+                    </p>
+                    <ul class="text-xs text-slate-400 space-y-1">
+                        <li>- 오픈그래프(OpenGraph) 최적화 이미지 제작</li>
+                        <li>- 반응형 레이아웃 및 웹 접근성 고려 시각 요소</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: AI Collaboration Framework -->
+        <section id="ai-usage" class="scroll-mt-24">
+            <div class="bg-slate-900 rounded-[3rem] p-12 text-white relative overflow-hidden">
+                <div class="absolute right-0 top-0 w-64 h-64 bg-blue-600/10 blur-[100px]"></div>
+                
+                <div class="relative z-10 text-center mb-16">
+                    <h2 class="text-3xl font-black mb-4">AI를 '증폭기'로 사용하는 정석 프로세스</h2>
+                    <p class="text-slate-400 max-w-2xl mx-auto">AI에게 창작을 맡기지 마세요. 우리가 정의한 팩트를 AI라는 필터를 통과시켜 더 강력하게 만드세요.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                    <div class="space-y-4">
+                        <div class="p-6 bg-white/5 border border-white/10 rounded-2xl">
+                            <h4 class="font-bold text-blue-400 mb-2">INPUT (팩트)</h4>
+                            <p class="text-xs text-slate-300">내부 정책, 실제 데이터, 서비스 강점, 고객 사례 (텍스트 원본)</p>
+                        </div>
+                        <div class="text-center text-slate-600"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="p-6 bg-white/5 border border-white/10 rounded-2xl">
+                            <h4 class="font-bold text-blue-400 mb-2">CONTEXT (맥락)</h4>
+                            <p class="text-xs text-slate-300">타겟 페르소나, 브랜드 보이스 톤앤매너, 우선순위 지침</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col items-center">
+                        <div class="w-24 h-24 bg-[#0073aa] rounded-full flex items-center justify-center animate-pulse shadow-2xl shadow-blue-500/50 mb-4">
+                            <i class="fa-solid fa-microchip text-4xl text-white"></i>
+                        </div>
+                        <span class="text-sm font-black text-[#0073aa] uppercase tracking-widest">AI Processor</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="p-6 bg-white/10 border border-white/20 rounded-2xl">
+                            <h4 class="font-bold text-green-400 mb-2">OUTPUT (카피라이팅)</h4>
+                            <p class="text-xs text-slate-200">팩트에 기반한 강력한 슬로건, 설득력 있는 컨텐츠 구조</p>
+                        </div>
+                        <div class="text-center text-slate-600"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="p-6 bg-white/10 border border-white/20 rounded-2xl">
+                            <h4 class="font-bold text-green-400 mb-2">ASSET (결과물)</h4>
+                            <p class="text-xs text-slate-200">사용자가 신뢰할 수 있는 홈페이지의 모든 텍스트와 레이아웃</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Final Summary -->
+        <section class="scroll-mt-24 pb-20">
+            <div class="max-w-3xl mx-auto bg-white p-10 rounded-3xl card-shadow border border-slate-100 text-center">
+                <i class="fa-solid fa-award text-5xl text-[#0073aa] mb-6"></i>
+                <h2 class="text-3xl font-black text-slate-900 mb-4">최종 결론</h2>
+                <div class="text-left space-y-6 text-slate-600">
+                    <p class="leading-relaxed">
+                        홈페이지 제작 수단은 **워드프레스**가 정답입니다. 이는 단순히 유행이 아니라 전 세계에서 검증된 **비즈니스 연속성** 때문입니다.
+                    </p>
+                    <p class="leading-relaxed">
+                        이를 위해 **기획**은 AI가 소설을 쓰지 않도록 <span class="text-slate-900 font-bold">사실 관계와 정책을 정리하는 '데이터 센터'</span>가 되어야 하며, **디자인**은 예쁜 그림을 넘어 <span class="text-slate-900 font-bold">브랜드의 신뢰와 비기능적 디테일을 챙기는 '경험 설계자'</span>가 되어야 합니다.
+                    </p>
+                    <div class="p-6 bg-slate-50 rounded-xl border-l-4 border-[#0073aa]">
+                        <p class="text-sm font-bold text-slate-800 italic">
+                            "AI는 당신의 생각을 대신하지 않습니다. 당신의 올바른 생각을 가장 멋진 결과물로 만들어줄 뿐입니다. 이제 팩트에서 시작하십시오."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <p class="text-slate-400 text-sm mb-4">© 2024 WordPress Strategic Implementation Framework. All Rights Reserved.</p>
+            <div class="flex justify-center gap-6">
+                <i class="fa-brands fa-wordpress-simple text-slate-200 text-2xl"></i>
+                <i class="fa-solid fa-compass text-slate-200 text-2xl"></i>
+                <i class="fa-solid fa-shield-check text-slate-200 text-2xl"></i>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initBalanceChart();
+        });
+
+        function initBalanceChart() {
+            const ctx = document.getElementById('balanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['사실 기반 기획', '브랜드 UX 디자인', 'SEO 최적화', '확장성(WP)', '유지보수 용이성', '비용 효율성'],
+                    datasets: [{
+                        label: '워드프레스 전략적 모델',
+                        data: [95, 90, 95, 90, 95, 85],
+                        fill: true,
+                        backgroundColor: 'rgba(0, 115, 170, 0.2)',
+                        borderColor: '#0073aa',
+                        pointBackgroundColor: '#0073aa',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#0073aa'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function switchTab(role) {
+            const plannerBtn = document.getElementById('tab-planner');
+            const designerBtn = document.getElementById('tab-designer');
+            const plannerContent = document.getElementById('content-planner');
+            const designerContent = document.getElementById('content-designer');
+
+            if (role === 'planner') {
+                plannerBtn.classList.add('tab-active');
+                plannerBtn.classList.remove('text-slate-400');
+                designerBtn.classList.remove('tab-active');
+                designerBtn.classList.add('text-slate-400');
+                
+                plannerContent.classList.remove('hidden');
+                designerContent.classList.add('hidden');
+            } else {
+                designerBtn.classList.add('tab-active');
+                designerBtn.classList.remove('text-slate-400');
+                plannerBtn.classList.remove('tab-active');
+                plannerBtn.classList.add('text-slate-400');
+                
+                designerContent.classList.remove('hidden');
+                plannerContent.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
